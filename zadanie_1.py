@@ -1,3 +1,4 @@
+import random
 
 # zamiana macierzy sąsiedztwa na listę sąsiedztwa 
 def matrix_to_list(matrix):
@@ -10,7 +11,7 @@ def matrix_to_list(matrix):
                 graf_lista[i].append(j)
     return graf_lista
 
-    #zamiana macierzy sąsiedztwa na listę krawędzi
+#zamiana macierzy sąsiedztwa na listę krawędzi
 def matrix_to_edges(matrix):
     n = len(matrix)
     edges = []
@@ -45,8 +46,8 @@ def edges_to_list(edges):
     if not edges:
         return {}
 
-    vertices = {u for u, v in edges} | {v for u, v in edges}
-    n = max(vertices) + 1
+    nodes = {u for u, v in edges} | {v for u, v in edges}
+    n = max(nodes) + 1
     graf_lista = {i: [] for i in range(n)}
     for u, v in edges:
         graf_lista[u].append(v)
@@ -88,7 +89,56 @@ def graph_converter(graph, input_type):
 
     raise ValueError(f"Nieznany typ reprezentacji grafu: {input_type}")
 
+    #generowanie losowego graf
 
+    #generowane drzewa rozpinającego w celu zapewnienia spójności grafu
+def random_spanning_tree(n):
+
+    nodes = list(range(n))
+    random.shuffle(nodes)
+    connected = {nodes[0]}
+    remaining = set(nodes[1:])
+    tree_edges = []
+
+    while remaining:
+        u = random.choice(list(connected))
+        v = random.choice(list(remaining))
+        tree_edges.append((u, v))
+        connected.add(v)
+        remaining.remove(v)
+
+    return tree_edges
+
+def generate_random_connected_graph(n):
+    if n < 1:
+        return []
+
+    max_edges = n * (n - 1) // 2
+    # najpierw drzewo (n-1 krawędzi)
+    edges = random_spanning_tree(n)
+
+    # losowanie ile dodatkowych krawędzi dołożyć
+    extra = random.randint(0, max_edges - (n - 1))
+
+    # wszystkie możliwe krawędzie, które nie wystąpiły w drzewie
+    all_pairs = [(i, j) for i in range(n) for j in range(i+1, n)]
+    remaining = list(set(all_pairs) - set(tuple(sorted(e)) for e in edges))
+    random.shuffle(remaining)
+
+    edges.extend(remaining[:extra])
+    return edges
+
+
+    #generowanie loswego grafu spójnego 
+def random_graph(n, representation='graf_lista'):
+    edges = generate_random_connected_graph(n)
+    if representation == 'gr_lista_krawedzi':
+        return edges
+    if representation == 'graf_lista':
+        return edges_to_list(edges)
+    if representation == 'graf_macierz':
+        return edges_to_matrix(edges)
+    raise ValueError("Nieznany format wyjściowy: " + str(representation))
 
 
 if __name__ == "__main__":
@@ -111,3 +161,14 @@ if __name__ == "__main__":
     print("\n")
     print("Konwersja z listy krawędzi:  \n", graph_converter(gr_lista_krawedzi, 'gr_lista_krawedzi'))
     print("\n")
+
+
+    #losowy graf:
+      # losowy graf spójny o 5 wierzchołkach
+    g_edges  = random_graph(5, 'gr_lista_krawedzi')
+    g_list   = random_graph(5, 'graf_lista')
+    g_matrix = random_graph(5, 'graf_macierz')
+    print("Losowy graf - krawędzie:", g_edges)
+    print("Losowy graf - lista sąsiedztwa:", g_list)
+    print("Losowy graf - macierz sąsiedztwa:", g_matrix)
+
