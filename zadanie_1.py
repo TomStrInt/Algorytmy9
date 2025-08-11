@@ -162,13 +162,39 @@ if __name__ == "__main__":
     print("Konwersja z listy krawędzi:  \n", graph_converter(gr_lista_krawedzi, 'gr_lista_krawedzi'))
     print("\n")
 
-
-    #losowy graf:
+ #losowy graf:
       # losowy graf spójny o 5 wierzchołkach
-    g_edges  = random_graph(5, 'gr_lista_krawedzi')
-    g_list   = random_graph(5, 'graf_lista')
-    g_matrix = random_graph(5, 'graf_macierz')
-    print("Losowy graf - krawędzie:", g_edges)
-    print("Losowy graf - lista sąsiedztwa:", g_list)
-    print("Losowy graf - macierz sąsiedztwa:", g_matrix)
-
+while True:
+    print("Wybierz format reprezentacji grafu:")
+    print("1. Lista krawędzi")
+    print("2. Macierz sąsiedztwa")
+    print("3. Lista sąsiedztwa")
+    print("q. Wyjście")
+    
+    choice = input(" Twój wybór: ").strip()
+    
+    if choice == '1':
+        g_edges = random_graph(5, 'gr_lista_krawedzi')
+        print("\nLosowy graf- lista krawędzi:")
+        print(g_edges)
+    
+    elif choice == '2':
+        g_matrix = random_graph(5, 'graf_macierz')
+        print("\nLosowy graf  -macierz sąsiedztwa:")
+        for row in g_matrix:
+            print(row)
+    
+    elif choice == '3':
+        g_list = random_graph(5, 'graf_lista')
+        print("\nLosowy graf -lista sąsiedztwa:")
+        #print(type(g_list))
+        print(g_list)
+     
+    elif choice.lower() == 'q':
+        print("Koniec programu")
+        break
+    
+    else:
+        print("Niepoprawny wybór. Wprowadź 1, 2, 3 lub q, żeby zakończyć.")
+    
+    print()
